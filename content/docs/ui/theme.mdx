@@ -1,0 +1,108 @@
+---
+title: Theming
+description: Add Theme to Fumadocs UI
+icon: Palette
+---
+
+## Usage
+
+You can import the pre-built stylesheet.
+
+```tsx
+import 'fumadocs-ui/style.css';
+```
+
+> Notice that the stylesheet performs preflight (aka normalization)
+
+For Tailwind CSS projects, use the official Tailwind CSS plugin.
+
+```json doc-gen:file
+{
+  "file": "./content/docs/example/tailwind.config.js",
+  "codeblock": {
+    "meta": "title=\"tailwind.config.js\""
+  }
+}
+```
+
+### Global Styles
+
+By using the Tailwind CSS plugin, or the pre-built stylesheet, your default border, text and background
+colors will be changed.
+
+### Light/Dark Modes
+
+Fumadocs supports light/dark modes with [`next-themes`](https://github.com/pacocoursey/next-themes).
+The Theme Provider is a part of Root Provider.
+
+See [Root Provider](/docs/ui/blocks/root-provider#theme-provider) to learn more.
+
+### RTL Layout
+
+RTL (Right-to-left) layout is supported. To enable RTL, pass the `dir` prop to body.
+
+```tsx
+<body dir="rtl"></body>
+```
+
+Also pass the same prop to root provider to configure Radix UI RTL layout.
+
+```tsx
+import { RootProvider } from '@fumadocs-ui/provider';
+
+<RootProvider dir="rtl"></RootProvider>;
+```
+
+## Themes
+
+The design system was inspired by [Shadcn UI](https://ui.shadcn.com), you can easily customize all the properties using CSS variables.
+
+```css title="global.css"
+:root {
+  /* hsl colors */
+  /* use whitespace instead of comma */
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+}
+```
+
+> Only a subset of colors are provided by Fumadocs UI.
+>
+> It may not be compatible with Shadcn UI.
+
+## Tailwind CSS Plugin [#docsui-plugin]
+
+The official Tailwind CSS plugin introduces new colors and extra utilities including `steps`.
+
+### Presets
+
+It comes with many theme presets out-of-the-box, you can pick one you prefer rather than the default one.
+
+```js
+import { createPreset } from 'fumadocs-ui/tailwind-plugin';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  presets: [
+    createPreset({
+      preset: 'ocean',
+    }),
+  ],
+};
+```
+
+### Typography
+
+We use the [Tailwind CSS Typography](https://tailwindcss.com/docs/typography-plugin) plugin internally, you can customize it with CSS.
+
+The Tailwind CSS plugin overrides the default configuration for the Typography plugin. You can use the `prose` utility directly.
+
+```tsx
+<div className="prose">...</div>
+```

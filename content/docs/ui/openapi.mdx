@@ -1,0 +1,169 @@
+---
+title: OpenAPI Generator
+description: Generating docs for OpenAPI schema
+---
+
+## Usage
+
+Install the required packages.
+
+```package-install
+fumadocs-openapi
+```
+
+Create a script:
+
+```js title="scripts/generate-docs.mjs"
+import { generateFiles } from 'fumadocs-openapi';
+
+void generateFiles({
+  input: ['./petstore.yaml'],
+  output: './content/docs',
+});
+```
+
+> Only OpenAPI 3.0 is supported.
+>
+> It doesn't allow JSON schema specific keywords like `const`, as [they are unsupported](https://swagger.io/docs/specification/data-models/keywords)
+
+Generate docs with the script:
+
+```bash
+node ./scripts/generate-docs.mjs
+```
+
+Fumadocs OpenAPI generates MDX content directly, you can use a formatter (e.g. Prettier) to format the output files.
+
+### Demo
+
+[View demo](/docs/ui/museum).
+
+## Options
+
+You can also pass options to the `generateFiles` function.
+
+### Input
+
+An array of input files (path), wildcard allowed.
+
+### Output
+
+Path to the output directory.
+
+### Per
+
+Customise how the page is generated, default to `file`.
+
+| mode | description                     |
+| ---- | ------------------------------- |
+| tag  | Generate a page for each tag    |
+| file | Generate a page for each schema |
+
+### Name
+
+A function that controls the output path of files.
+
+```ts
+import { generateFiles } from 'fumadocs-openapi';
+
+void generateFiles({
+  input: ['./petstore.yaml'],
+  output: './content/docs',
+});
+```
+
+### Imports
+
+The imports on the top of MDX files.
+When not specified, it imports the required components from `fumadocs-ui/components/api`.
+
+```ts
+import { generateFiles } from 'fumadocs-openapi';
+
+void generateFiles({
+  input: ['./petstore.yaml'],
+  output: './content/docs',
+  imports: [
+    {
+      names: ['Component1', 'Component2'],
+      from: '@/components/ui/api',
+    },
+  ],
+});
+```
+
+### Frontmatter
+
+Customise the frontmatter of MDX files.
+By default, it includes a `full: true` property for Fumadocs UI.
+
+```ts
+import { generateFiles } from 'fumadocs-openapi';
+
+void generateFiles({
+  input: ['./petstore.yaml'],
+  output: './content/docs',
+  frontmatter: (title, description) => ({
+    myProperty: 'hello',
+  }),
+});
+```
+
+### Generate Code Samples
+
+Generate custom code samples for each API endpoint.
+
+```ts
+import { generateFiles } from 'fumadocs-openapi';
+
+void generateFiles({
+  input: ['./petstore.yaml'],
+  output: './content/docs',
+  generateCodeSamples(endpoint) {
+    return [
+      {
+        lang: 'js',
+        label: 'JavaScript SDK',
+        source: "console.log('hello')",
+      },
+    ];
+  },
+});
+```
+
+In addition, you can also specify code samples via OpenAPI schema.
+
+```yaml
+paths:
+  /plants:
+    get:
+      x-codeSamples:
+        - lang: js
+          label: JavaScript SDK
+          source: |
+            const planter = require('planter');
+            planter.list({ unwatered: true });
+```
+
+### Renderer
+
+Customise how components are generated.
+
+```ts
+import { generateFiles, createElement } from 'fumadocs-openapi';
+
+void generateFiles({
+  input: ['./petstore.yaml'],
+  output: './content/docs',
+  renderer: {
+    Root(child) {
+      return createElement(
+        'Root',
+        {},
+        '<div className="bg-secondary p-4 rounded-lg">Demo Only</div>',
+        ...child,
+      );
+    },
+  },
+});
+```
